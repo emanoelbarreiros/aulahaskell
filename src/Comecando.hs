@@ -5,12 +5,13 @@ produto [x] = x
 produto l = head l * produto (tail l)
 
 
---qsortD :: [Int] -> [Int]
+qsortD :: [Int] -> [Int]
 qsortD [] = []
 qsortD (x:xs) = qsortD maiores ++ [x] ++ qsortD menores
                    where
                       menores = [a | a <- xs, a < x ]
-                      maiores = [b | b <- xs, b > x ]
+                      maiores = [b | b <- xs, b >= x ]
+
 
 meuLast l = head (reverse l)
 

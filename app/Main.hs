@@ -2,12 +2,59 @@ module Main where
 
 import System.IO
 
+
+zero = "+----+\n"++
+       "|    |\n"++
+       "|\n"++
+       "|\n"++
+       "|\n"++
+       "+--------"
+um   = "+----+\n"++
+       "|    |\n"++
+       "|   😘\n"++
+       "|\n"++
+       "|\n"++
+       "+--------"
+dois = "+----+\n"++
+       "|    |\n"++
+       "|   🙂\n"++
+       "|   🎽\n"++
+       "|\n"++
+       "+--------"
+tres = "+----+\n"++
+       "|    |\n"++
+       "|   😬\n"++
+       "| 💪🎽\n"++
+       "|\n"++
+       "+--------"
+quatro = "+----+\n"++
+       "|    |\n"++
+       "|   😐\n"++
+       "| 💪🎽🤳 \n"++
+       "|\n"++
+       "+--------"
+cinco = "+----+\n"++
+       "|    |\n"++
+       "|   😰\n"++
+       "| 💪🎽🤳\n"++
+       "|  🦵\n"++
+       "+--------"
+seis = "+----+\n"++
+       "|    |\n"++
+       "|   💀\n"++
+       "| 💪🎽🤳\n"++
+       "| 🦵🦵\n"++
+       "+--------"
+
+forcas = [zero, um, dois, tres, quatro, cinco, seis]
+
 main :: IO ()
 main = do hSetBuffering stdout NoBuffering
+          hSetBuffering stdin NoBuffering
           putStrLn "Escreva uma palavra: "
-          palavra <- obterLinhaSecreta
+          segredo <- obterLinhaSecreta
           putStrLn "Tente adivinhar: "
-          jogar palavra
+          jogar segredo (replicate (length segredo) '-' ) 0
 
 
 obterLinhaSecreta :: IO String
@@ -28,14 +75,38 @@ obterChar = do hSetEcho stdin False
                return x
 
 
-jogar :: String -> IO ()
-jogar palavra = do putStr "? "
-                   tentativa <- getLine
+jogar :: String -> String -> Int -> IO ()
+jogar segredo parcial erros = 
+                   do 
+                      if parcial == segredo then
+                          putStrLn "Muito bem! 🙌"
+                      else do 
+                          putStr "? "
+                          tentativa <- getChar
+                          putStr "\n"
+                          let novoParcial = (encontrar segredo tentativa parcial)
+                          let qtdErros = if novoParcial == parcial then erros + 1 else erros
+                          putStrLn (forcas !! qtdErros)
+                          if qtdErros == 6 then
+                              putStrLn "Sinto muito, você morrerá em instantes.🤭"
+                          else
+                              do
+                                putStrLn novoParcial
+                                jogar segredo novoParcial qtdErros
 
-                   if tentativa == palavra then
-                       putStrLn "Muito bem!"
-                   else do putStrLn (encontrar palavra tentativa)
-                           jogar palavra
+encontrar :: String -> Char -> String -> String
+encontrar xs c parc = [if x == c then x else parc !! ind | (x,ind) <- zip xs [0..]]
 
-encontrar :: String -> String -> String
-encontrar xs ys = [if x `elem` ys then x else '-' | x <- xs]
+-- main :: IO ()
+-- main = do
+--        hSetBuffering stdout NoBuffering
+--        hSetBuffering stdin NoBuffering
+--        putStr "Informe o primeiro numero: "
+--        n1 <- getLine
+--        putStr "Informe o segundo numero: "
+--        n2 <- getLine
+--        let res = (read n1 :: Int) + (read n2 :: Int)
+--        putStr (show res)
+
+-- main :: IO ()
+-- main = forca

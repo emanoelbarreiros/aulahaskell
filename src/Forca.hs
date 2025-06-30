@@ -2,12 +2,12 @@ module Forca where
 
 import System.IO
 
-main :: IO ()
-main = do hSetBuffering stdout NoBuffering
-          putStrLn "Escreva uma palavra: "
-          palavra <- obterLinhaSecreta
-          putStrLn "Tente adivinhar: "
-          jogar palavra
+forca :: IO ()
+forca = do hSetBuffering stdout NoBuffering
+           putStrLn "Escreva uma palavra: "
+           palavra <- obterLinhaSecreta
+           putStrLn "Tente adivinhar: "
+           jogar palavra
 
 obterLinhaSecreta :: IO String
 obterLinhaSecreta = do x <- obterChar

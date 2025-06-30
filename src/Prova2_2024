@@ -1,0 +1,50 @@
+module Prova2_2024 where
+
+
+--Questao 1
+data ListaAninhada a = Elem a | Lista [ListaAninhada a]
+
+
+planificar :: ListaAninhada a -> [a]
+planificar (Elem a) = [a]
+planificar (Lista l) = concat $ map planificar l
+-- dá pra fazer assim também
+--planificar (Lista l) = foldr (\v s -> planificar v ++ s) [] l
+--planificar (Lista xs) = planificar (head xs) ++ planificar (Lista (tail xs))
+--bla
+
+--Questao 2
+data Expr = Lit Int | Soma Expr Expr | Sub Expr Expr | Mult Expr Expr | Div Expr Expr
+
+avalia :: Expr -> Int
+avalia (Lit x) = x
+avalia (Soma e1 e2) = avalia e1 + avalia e2
+avalia (Sub e1 e2) = avalia e1 - avalia e2
+avalia (Mult e1 e2) = avalia e1 * avalia e2
+avalia (Div e1 e2) = avalia e1 `div` avalia e2
+
+--Questao 3
+data Arvore a = Folha | No (Arvore a) a (Arvore a) deriving Show
+
+-- mudei o nome para não dar conflito com a função repeat do prelude
+repeatTree :: a -> Arvore a
+repeatTree x = No (repeatTree x) x (repeatTree x)
+
+-- mudei o nome para não dar conflito com a função take do prelude
+takeTree :: (Eq t, Num t) => t -> Arvore a -> Arvore a
+takeTree 0 _ = Folha
+takeTree _ Folha = Folha
+takeTree n (No a1 v a2) = No (takeTree (n-1) a1) v (takeTree (n-1) a2)
+
+-- mudei o nome para não dar conflito com a função replicate do prelude
+replicateTree :: (Eq t, Num t) => t -> a -> Arvore a
+replicateTree n = takeTree n . repeatTree
+
+--Questao 4
+
+resolveEq :: (Double, Double, Double) -> (Maybe Double, Maybe Double)
+resolveEq (a,b,c) | delta == 0 = (Just $ negate b / 2 * a, Just $ negate b / 2 * a)
+                  | delta > 0 = (Just $ (negate b + sqrt delta) / 2 * a, Just $ (negate b - sqrt delta) / 2 * a)
+                  | otherwise = (Nothing, Nothing)
+                    where
+                        delta = b * b - 4 * a * c
